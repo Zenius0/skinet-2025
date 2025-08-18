@@ -15,12 +15,7 @@ import { TextInputComponent } from "../../../shared/components/text-input/text-i
   imports: [
     ReactiveFormsModule,
     MatCard,
-    MatFormField,
-    MatLabel,
-    MatInput,
     MatButton,
-    JsonPipe,
-    MatError,
     TextInputComponent
 ],
   templateUrl: './register.component.html',
