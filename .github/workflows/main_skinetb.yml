@@ -32,7 +32,7 @@ jobs:
 
       - name: Install deps and build angular app
         run: |
-          cd client
+          cd /skinet/client
           npm install
           ng build
 
