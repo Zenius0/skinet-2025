@@ -28,13 +28,19 @@ jobs:
           node-version: "20"
 
       - name: Install Angular CLI
-        run: npm install -g @angular/cli@20
+        run: npm install -g @angular/cli@18
 
       - name: Install deps and build angular app
         run: |
           cd skinet/client
           npm install
-          ng build
+          ng build --configuration production
+
+      - name: Copy Angular dist to API wwwroot
+        run: |
+          if (Test-Path "skinet/API/wwwroot") { Remove-Item -Recurse -Force "skinet/API/wwwroot" }
+          Copy-Item -Recurse -Force "skinet/client/dist/client" "skinet/API/wwwroot"
+        shell: pwsh
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
