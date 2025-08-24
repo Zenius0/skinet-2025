@@ -16,7 +16,8 @@ jobs:
       contents: read #This is required for actions/checkout
 
     env:
-      PROJECT_PATH: ./API
+      PROJECT_PATH: ./skinet/API
+      CLIENT_PATH: ./skinet/client
 
     steps:
       - uses: actions/checkout@v4
