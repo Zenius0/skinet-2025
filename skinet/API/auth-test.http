@@ -1,0 +1,42 @@
+### Admin ile Login
+POST https://localhost:5001/api/account/login
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "Pa$$w0rd"
+}
+
+### Normal Kullanıcı Register
+POST https://localhost:5001/api/account/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "test@test.com",
+  "password": "Pa$$w0rd"
+}
+
+### Normal Kullanıcı Login
+POST https://localhost:5001/api/account/login
+Content-Type: application/json
+
+{
+  "email": "test@test.com",
+  "password": "Pa$$w0rd"
+}
+
+### Admin Secret (JWT token gerekli)
+GET https://localhost:5001/api/buggy/admin-secret
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### Kullanıcıya Admin Rolü Ver (Admin JWT token gerekli)
+POST https://localhost:5001/api/account/assign-role
+Content-Type: application/json
+Authorization: Bearer ADMIN_JWT_TOKEN_HERE
+
+{
+  "email": "test@test.com",
+  "role": "Admin"
+}

@@ -19,7 +19,6 @@ public class PaymentsController(IPaymentService paymentService
 {
     private readonly string _whSecret = config["StripeSettings:WhSecret"]!;
 
-    [Authorize]
     [HttpPost("{cartId}")]
     public async Task<ActionResult<ShoppingCart>> CreateOrUpdatePaymentIntent(string cartId)
     {

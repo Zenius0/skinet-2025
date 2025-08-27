@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Core.Entities.OrderAggregate;
 
 namespace Core.Specifications;
@@ -23,5 +24,18 @@ public class OrderSpecification : BaseSpecification<Order>
     {
         AddInclude("OrderItems");
         AddInclude("DeliveryMethod");
+    }
+
+    public OrderSpecification(OrderSpecParams specParams) : base(x =>
+        string.IsNullOrEmpty(specParams.Status) || x.Status == ParseStatus(specParams.Status)
+    )
+    {
+
+    }
+
+    private static OrderStatus? ParseStatus(string status)
+    {
+        if (Enum.TryParse<OrderStatus>(status, true, out var result)) return result;
+        return null;
     }
 }
