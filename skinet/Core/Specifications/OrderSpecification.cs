@@ -30,7 +30,16 @@ public class OrderSpecification : BaseSpecification<Order>
         string.IsNullOrEmpty(specParams.Status) || x.Status == ParseStatus(specParams.Status)
     )
     {
+        AddInclude("OrderItems");
+        AddInclude("DeliveryMethod");
+        ApplyPaging(specParams.PageSize * (specParams.PageIndex - 1), specParams.PageSize);
+        AddOrderByDescending(x => x.OrderDate);
+    }
 
+    public OrderSpecification(int id) : base(x => x.Id == id)
+    {
+        AddInclude("OrderItems");
+        AddInclude("DeliveryMethod");
     }
 
     private static OrderStatus? ParseStatus(string status)
