@@ -47,6 +47,7 @@ public class ProductsController(IUnitOfWork unit) : BaseApiController
         return BadRequest("Problem creating product");
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
 
     [Authorize(Roles = "Admin")]

@@ -62,7 +62,7 @@ export class StripeService {
   }
 
   async createAddressElement() {
-    if (!this.elements) {
+    if (!this.addressElement) {
       const elements = await this.initializeElements();
       if (elements) {
         const user = this.accountService.currentUser();

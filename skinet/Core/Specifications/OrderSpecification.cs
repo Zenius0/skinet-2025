@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Core.Entities.OrderAggregate;
 
 namespace Core.Specifications;

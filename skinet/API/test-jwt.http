@@ -1,0 +1,23 @@
+### Test register endpoint with JWT token
+POST https://localhost:5001/api/account/register
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "test@example.com",
+  "password": "Pa$$w0rd"
+}
+
+### Test login endpoint
+POST https://localhost:5001/api/account/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Pa$$w0rd"
+}
+
+### Test admin endpoint with JWT token (replace YOUR_JWT_TOKEN with actual token)
+GET https://localhost:5001/api/buggy/admin-secret
+Authorization: Bearer YOUR_JWT_TOKEN
