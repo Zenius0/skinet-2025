@@ -6,7 +6,6 @@ using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -20,7 +19,7 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
             FirstName = registerDto.FirstName,
             LastName = registerDto.LastName,
             Email = registerDto.Email,
-            UserName = registerDto.Email
+            UserName = registerDto.Email,
         };
 
         var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
@@ -36,6 +35,30 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
         }
 
         return Ok();
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult> Login(LoginDto loginDto)
+    {
+        var user = await signInManager.UserManager.FindByEmailAsync(loginDto.Email);
+
+        if (user == null) return Unauthorized();
+
+        var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+        if (!result.Succeeded) return Unauthorized();
+
+        await signInManager.SignInAsync(user, loginDto.RememberMe);
+
+        var roles = await signInManager.UserManager.GetRolesAsync(user);
+
+        return Ok(new
+        {
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            Roles = roles
+        });
     }
 
     [Authorize]
@@ -59,7 +82,8 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
             user.FirstName,
             user.LastName,
             user.Email,
-            Address = user.Address?.ToDto()
+            Address = user.Address?.ToDto(),
+            Roles = User.FindFirstValue(ClaimTypes.Role)
         });
     }
 

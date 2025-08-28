@@ -27,6 +27,12 @@ export class StripeService {
   getStripeInstance() {
     return this.stripePromise;
   }
+
+  resetElements() {
+    this.elements = undefined;
+    this.addressElement = undefined;
+    this.paymentElement = undefined;
+  }
    
   async initializeElements() {
     if (!this.elements) {

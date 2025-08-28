@@ -1,0 +1,19 @@
+### Test Stripe Payment Flow
+
+### 1. Test Payment Intent Creation
+GET https://localhost:5001/api/payments/test-cart-id
+Content-Type: application/json
+
+### 2. Test Delivery Methods
+GET https://localhost:5001/api/payments/delivery-methods
+Content-Type: application/json
+
+### 3. Create Order with Confirmation Token
+POST https://localhost:5001/api/orders
+Content-Type: application/json
+
+{
+  "cartId": "test-cart-id",
+  "deliveryMethodId": 1,
+  "confirmationToken": "ctoken_1S0eGz9bzK7L1J2LqvKNyBLG"
+}
