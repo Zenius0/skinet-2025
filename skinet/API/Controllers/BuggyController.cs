@@ -14,25 +14,21 @@ public class BuggyController : BaseApiController
     {
         return Unauthorized();
     }
-
     [HttpGet("badrequest")]
     public IActionResult GetBadRequest()
     {
         return BadRequest("Not a good request");
     }
-
     [HttpGet("notfound")]
     public IActionResult GetNotFound()
     {
         return NotFound();
     }
-
     [HttpGet("internalerror")]
     public IActionResult GetInternalError()
     {
-        throw new Exception("This is an exception");
+        throw new Exception("This is a test exception");
     }
-
     [HttpPost("validationerror")]
     public IActionResult GetValidationError(CreateProductDto product)
     {
@@ -46,6 +42,26 @@ public class BuggyController : BaseApiController
         var name = User.FindFirst(ClaimTypes.Name)?.Value;
         var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        return Ok(" hello " + name + " with the id of " + id);
+        return Ok("Hello " + name + " with the id of " + id);
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin-secret")]
+    public IActionResult GetAdminSecret()
+    {
+        var name = User.FindFirst(ClaimTypes.Name)?.Value;
+        var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var isAdmin = User.IsInRole("Admin");
+        var roles = User.FindFirstValue(ClaimTypes.Role);
+
+        return Ok(new
+        {
+            name,
+            id,
+            isAdmin,
+            roles
+        });
+    }
+
+
 }

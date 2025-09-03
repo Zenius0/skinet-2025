@@ -1,12 +1,12 @@
-using Microsoft.EntityFrameworkCore;
-using Infrastructure.Data;
-using Core.Interfaces;
 using API.Middleware;
-using StackExchange.Redis;
-using Infrastructure.Services;
-using Core.Entities;
 using API.SignalR;
-using Microsoft.AspNetCore.Builder;
+using Core.Entities;
+using Core.Interfaces;
+using Infrastructure.Data;
+using Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,30 +17,34 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddCors();
 builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
 {
-    var connString = builder.Configuration.GetConnectionString("Redis")
-            ?? throw new Exception("Cannot get redis connection string");
-    var configuration = ConfigurationOptions.Parse(connString, true);
-    return ConnectionMultiplexer.Connect(configuration);
+    var connString = builder.Configuration.GetConnectionString("Redis") ?? throw new Exception("Cannot get redis connetion string");
+    var configuation = ConfigurationOptions.Parse(connString, true);
+    return ConnectionMultiplexer.Connect(configuation);
 });
+builder.Services.AddScoped<ICouponService, CouponService>();
+
 builder.Services.AddSingleton<ICartService, CartService>();
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<StoreContext>();
+builder.Services.AddIdentityApiEndpoints<AppUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<StoreContext>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddSignalR();
-builder.Services.AddScoped<ICouponService, CouponService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200", "https://localhost:4200", "https://localhost:5001"));
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+    .WithOrigins("http://localhost:4200", "https://localhost:4200"));
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -52,19 +56,19 @@ app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();
 app.MapHub<NotificationHub>("/hub/notifications");
 app.MapFallbackToController("Index", "Fallback");
-
 try
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<StoreContext>();
-    await context.Database.MigrateAsync();
-    await StoreContextSeed.SeedAsync(context);
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    // await context.Database.MigrateAsync(); // Temporarily disabled
+    await StoreContextSeed.SeedAsync(context, userManager);
+
 }
-catch (System.Exception ex)
+catch (Exception ex)
 {
     Console.WriteLine(ex);
     throw;
 }
-
 app.Run();

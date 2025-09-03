@@ -108,16 +108,20 @@ export class StripeService {
     if (result.error) throw new Error(result.error.message);
 
     const clientSecret = this.cartService.cart()?.clientSecret;
+    console.log('ConfirmPayment - clientSecret:', clientSecret);
+    console.log('ConfirmPayment - confirmationToken.id:', confirmationToken.id);
 
     if (stripe && clientSecret) {
-      return await stripe.confirmPayment({
+      const paymentResult = await stripe.confirmPayment({
         clientSecret: clientSecret,
         confirmParams: {
           confirmation_token: confirmationToken.id
         },
         redirect: 'if_required'
-
-      })
+      });
+      
+      console.log('Stripe confirmPayment result:', paymentResult);
+      return paymentResult;
     } else {
       throw new Error('Unable to load stripe');
     }

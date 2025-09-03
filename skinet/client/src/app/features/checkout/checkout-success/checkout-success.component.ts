@@ -22,7 +22,7 @@ import { OrderService } from '../../../core/services/order.service';
   templateUrl: './checkout-success.component.html',
   styleUrl: './checkout-success.component.scss'
 })
-export class CheckoutSuccessComponent implements OnDestroy {
+export class CheckoutSuccessComponent implements OnDestroy{
   signalrService = inject(SignalrService);
   private orderService = inject(OrderService);
 
@@ -30,4 +30,6 @@ export class CheckoutSuccessComponent implements OnDestroy {
     this.orderService.orderComplete = false;
     this.signalrService.orderSignal.set(null);
   }
+
+
 }

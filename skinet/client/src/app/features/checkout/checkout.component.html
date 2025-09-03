@@ -1,10 +1,10 @@
-<div class="flex mt-32 gap-6">
+<div class="flex mt-2 gap-6">
   <div class="w-3/4">
     <mat-stepper
       (selectionChange)="onStepChange($event)"
       [linear]="true"
       #stepper
-      class="bg-white border border-gray-200 shadow-sm"
+      class="bg-white-border border-gray-200 shadow-sm"
     >
       <mat-step label="Address" [completed]="completionStatus().address">
         <div id="address-element"></div>
@@ -22,7 +22,7 @@
           </button>
           <button
             [disabled]="!completionStatus().address"
-            class="z-0"
+            class="z-0 bg-purple-800 text-white hover:bg-purple-900 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
             matStepperNext
             mat-flat-button
           >
@@ -40,6 +40,7 @@
             [disabled]="!completionStatus().delivery"
             matStepperNext
             mat-flat-button
+            class="bg-purple-800 text-white hover:bg-purple-900 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             Next
           </button>
@@ -53,6 +54,7 @@
             [disabled]="!completionStatus().card"
             matStepperNext
             mat-flat-button
+            class="bg-purple-800 text-white hover:bg-purple-900 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             Next
           </button>
@@ -68,6 +70,7 @@
             [disabled]="!confirmationToken || loading"
             (click)="confirmPayment(stepper)"
             mat-flat-button
+            class="bg-purple-800 text-white hover:bg-purple-900"
           >
             @if (loading) {
             <mat-spinner diameter="20"></mat-spinner>

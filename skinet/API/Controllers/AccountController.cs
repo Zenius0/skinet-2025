@@ -1,4 +1,3 @@
-using System;
 using System.Security.Claims;
 using API.DTOs;
 using API.Extensions;
@@ -31,7 +30,6 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
             {
                 ModelState.AddModelError(error.Code, error.Description);
             }
-
             return ValidationProblem();
         }
 
@@ -43,7 +41,6 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
     public async Task<ActionResult> Logout()
     {
         await signInManager.SignOutAsync();
-
         return NoContent();
     }
 
@@ -59,7 +56,8 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
             user.FirstName,
             user.LastName,
             user.Email,
-            Address = user.Address?.ToDto()
+            Address = user.Address?.ToDto(),
+            Roles = User.FindFirstValue(ClaimTypes.Role)
         });
     }
 
@@ -90,4 +88,5 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
 
         return Ok(user.Address.ToDto());
     }
+
 }
